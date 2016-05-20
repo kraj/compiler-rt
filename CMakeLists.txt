@@ -62,7 +62,15 @@ set(COMPILER_RT_BAREMETAL_BUILD OFF CACHE BOOLEAN
   "Build for a bare-metal target.")
 
 if (COMPILER_RT_STANDALONE_BUILD)
-  load_llvm_config()
+  find_package(LLVM REQUIRED)
+  list(APPEND CMAKE_MODULE_PATH "${LLVM_CMAKE_DIR}")
+
+  # Variables that AddLLVM.cmake depends on (included by AddCompilerRT)
+  set(LLVM_TOOLS_BINARY_DIR "${LLVM_INSTALL_PREFIX}/bin")
+  set(LLVM_LIBRARY_DIR "${LLVM_INSTALL_PREFIX}/lib")
+
+  set(LLVM_LIBRARY_OUTPUT_INTDIR
+    ${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/lib${LLVM_LIBDIR_SUFFIX})
 
   # Find Python interpreter.
   set(Python_ADDITIONAL_VERSIONS 2.7 2.6 2.5)
